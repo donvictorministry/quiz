@@ -13,7 +13,7 @@
   var CFG = {
     QUESTION_TIME_MS: 15000,
     NEXT_DELAY_MS: 1800,
-    VERSE_BANNER_MS: 8000,
+    VERSE_BANNER_MS: 6000,
     POINTS: { easy: 10, medium: 15, hard: 20 },
     STREAK_BONUS_EVERY: 3,
     STREAK_BONUS_POINTS: 15,
@@ -58,6 +58,7 @@
     toast: document.getElementById("toast"),
     verseBanner: document.getElementById("verse-banner"),
     verseBannerText: document.getElementById("verse-banner-text"),
+    verseBackdrop: document.getElementById("verse-backdrop"),
     leftMenuContent: document.getElementById("left-menu-content"),
     rightMenuContent: document.getElementById("right-menu-content"),
     teamPageContent: document.getElementById("team-page-content"),
@@ -107,12 +108,14 @@
   function showVerseBanner(text) {
     els.verseBannerText.textContent = text;
     els.verseBanner.classList.add("show");
+    if (els.verseBackdrop) els.verseBackdrop.classList.add("show");
     clearTimeout(verseBannerTimer);
-    verseBannerTimer = setTimeout(function () { els.verseBanner.classList.remove("show"); }, CFG.VERSE_BANNER_MS);
+    verseBannerTimer = setTimeout(hideVerseBanner, CFG.VERSE_BANNER_MS);
   }
   function hideVerseBanner() {
     clearTimeout(verseBannerTimer);
     els.verseBanner.classList.remove("show");
+    if (els.verseBackdrop) els.verseBackdrop.classList.remove("show");
   }
 
   /* ---------------------------------------------------------------- */
@@ -187,6 +190,7 @@
     els.statbar.style.display = "none";
     els.progressTrack.style.display = "none";
     els.seal.classList.remove("show");
+    document.getElementById("game-card").classList.add("home-full-bleed");
   }
 
   /* ---------------------------------------------------------------- */
@@ -238,6 +242,7 @@
       return;
     }
     initState(seriesKey);
+    document.getElementById("game-card").classList.remove("home-full-bleed");
     els.homeView.style.display = "none";
     els.endView.style.display = "none";
     els.quizView.style.display = "block";
@@ -469,18 +474,13 @@
       whatsappChannelUrl: "#"
     },
     members: [
-      { title: "Rev. Dr.", name: "Chris Victor / Johnson, PhD", role: "Ministry Director & Founder of CEAM", photo: "", bio: "Provides spiritual oversight and vision for Chris Ministries Online Community, guiding our educational and outreach programs." },
       { title: "[Title]", name: "[Team Member Name]", role: "[Role — e.g. UI/UX Designer]", photo: "", bio: "[Short bio — 1–2 sentences about this person's role and heart for ministry.]" },
+      { title: "Rev. Dr.", name: "Chris Victor / Johnson, PhD", role: "Ministry Director & Founder of CEAM", photo: "", bio: "Provides spiritual oversight and vision for Chris Ministries Online Community, guiding our educational and outreach programs.", featured: true },
       { title: "[Title]", name: "[Team Member Name]", role: "[Role — e.g. Backend Engineer]", photo: "", bio: "[Short bio — 1–2 sentences about this person's role and heart for ministry.]" },
       { title: "[Title]", name: "[Team Member Name]", role: "[Role — e.g. Bible Curriculum Lead]", photo: "", bio: "[Short bio — 1–2 sentences about this person's role and heart for ministry.]" },
       { title: "[Title]", name: "[Team Member Name]", role: "[Role — e.g. Outreach Coordinator]", photo: "", bio: "[Short bio — 1–2 sentences about this person's role and heart for ministry.]" },
       { title: "[Title]", name: "[Team Member Name]", role: "[Role — e.g. Worship & Media Lead]", photo: "", bio: "[Short bio — 1–2 sentences about this person's role and heart for ministry.]" },
-      { title: "[Title]", name: "[Team Member Name]", role: "[Role — e.g. Translator / Localization]", photo: "", bio: "[Short bio — 1–2 sentences about this person's role and heart for ministry.]" },
-      { title: "[Title]", name: "[Team Member Name]", role: "[Role — e.g. Volunteer Coordinator]", photo: "", bio: "[Short bio — 1–2 sentences about this person's role and heart for ministry.]" },
-      { title: "[Title]", name: "[Team Member Name]", role: "[Role — e.g. Prayer Ministry Lead]", photo: "", bio: "[Short bio — 1–2 sentences about this person's role and heart for ministry.]" },
-      { title: "[Title]", name: "[Team Member Name]", role: "[Role — e.g. Finance & Operations]", photo: "", bio: "[Short bio — 1–2 sentences about this person's role and heart for ministry.]" },
-      { title: "[Title]", name: "[Team Member Name]", role: "[Role — e.g. Social Media Manager]", photo: "", bio: "[Short bio — 1–2 sentences about this person's role and heart for ministry.]" },
-      { title: "[Title]", name: "[Team Member Name]", role: "[Role — e.g. IT & Systems Support]", photo: "", bio: "[Short bio — 1–2 sentences about this person's role and heart for ministry.]" }
+      { title: "[Title]", name: "[Team Member Name]", role: "[Role — e.g. Prayer Ministry Lead]", photo: "", bio: "[Short bio — 1–2 sentences about this person's role and heart for ministry.]" }
     ]
   };
 
@@ -503,7 +503,7 @@
 
     html += '<p class="team-section-label">Ministry Team</p><div class="team-grid">';
     TEAM.members.forEach(function (m) {
-      html += '<div class="team-card">';
+      html += '<div class="team-card' + (m.featured ? ' featured' : '') + '">';
       html += avatarBlockHtml(m.name, m.photo, "", false);
       html += '<p class="team-title">' + escapeHtml(m.title) + '</p>';
       html += '<p class="team-name">' + escapeHtml(m.name) + '</p>';
