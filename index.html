@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Bible Trivia Master</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Top app bar: hamburger (left menu), brand, three-dot (right menu) -->
+<div class="appbar">
+  <button class="appbar-icon" id="menu-toggle" aria-label="Open menu">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="appbar-title-wrap">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M11 2H13V10H21V13H13V22H11V13H3V10H11V2Z" fill="#1877F2"/></svg>
+    <span class="appbar-title">Bible Trivia Master</span>
+  </div>
+  <button class="appbar-icon" id="more-toggle" aria-label="More options">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="5" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="19" r="1.8" fill="currentColor"/></svg>
+  </button>
+</div>
+
+<div class="page-content">
+  <div class="statbar" id="statbar" style="display:none;">
+    <div class="stat score">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L14.5 8.5L21 9L16 13.5L17.5 20L12 16.5L6.5 20L8 13.5L3 9L9.5 8.5L12 2Z" fill="currentColor"/></svg>
+      <span id="score-text">0</span>
+    </div>
+    <div class="stat streak">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C12 2 6 8 6 13.5C6 17.5 8.7 21 12 21C15.3 21 18 17.5 18 13.5C18 12.5 17.8 11.5 17.5 10.6C16.9 12 15.7 12.8 15.7 12.8C16.1 10.2 14.8 7.3 12 5C12.6 7.2 12 9 10.8 10.3C9.6 11.6 9 12.9 9 14.3C9 16 10.2 17.3 12 17.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span id="streak-text">0</span>
+    </div>
+    <div class="stat" id="question-counter" style="color:var(--text-muted);">1 / 12</div>
+  </div>
+
+  <div class="progress-track" id="progress-track" style="display:none;"><div class="progress-fill" id="progress-fill" style="width:5%;"></div></div>
+
+  <div class="card" id="game-card">
+
+    <div id="home-view">
+      <div class="home-intro"><p>Choose a series below. Each series covers 12 questions across three categories.</p></div>
+      <div class="series-grid" id="series-grid"></div>
+    </div>
+
+    <div id="quiz-view" style="display:none;">
+      <div class="quiz-topline">
+        <button class="quiz-exit" id="quiz-exit-btn">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 4H6C4.9 4 4 4.9 4 6V18C4 19.1 4.9 20 6 20H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 16L20 12L15 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 12H10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Exit
+        </button>
+      </div>
+      <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+      <div><span class="eyebrow" id="category-tag">Category</span><span class="difficulty" id="difficulty-tag">EASY</span></div>
+      <div id="question-text">Loading question...</div>
+      <div class="options" id="options-wrap"></div>
+      <div class="feedback-row" id="feedback-row"></div>
+    </div>
+
+    <div id="end-view" style="display:none;">
+      <div class="end-screen">
+        <svg class="trophy" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 4H17V9C17 12 14.5 14 12 14C9.5 14 7 12 7 9V4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7 5H4V7C4 9 5.5 10.5 7 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M17 5H20V7C20 9 18.5 10.5 17 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 14V18" stroke="currentColor" stroke-width="1.6"/><path d="M8 21H16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M9 18H15L16 21H8L9 18Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <p class="end-title" id="end-title">Bible Scholar</p>
+        <p class="end-sub" id="end-sub">You finished with a strong score.</p>
+        <div class="end-stats">
+          <div class="end-stat"><span class="num" id="final-score">0</span><span class="lbl">Score</span></div>
+          <div class="end-stat"><span class="num" id="final-accuracy">0%</span><span class="lbl">Accuracy</span></div>
+          <div class="end-stat"><span class="num" id="final-streak">0</span><span class="lbl">Best Streak</span></div>
+        </div>
+        <div class="category-breakdown" id="category-breakdown"></div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="play-again-btn">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4V9H9" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 15C6 19 10 21.5 14 20.6C18 19.7 20.7 15.8 20 11.8C19.3 7.8 15.5 5 11.5 5.3C8.7 5.5 6.3 7.2 5 9.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Play This Series Again
+          </button>
+          <button class="btn btn-secondary" id="choose-series-btn">Choose Another Series</button>
+        </div>
+      </div>
+    </div>
+
+    <svg class="seal" id="seal" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="10" fill="#C9A227"/>
+      <path d="M8 12.5L10.5 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+</div>
+
+<!-- Verse banner: pops at TOP, auto-hides after 8s -->
+<div class="verse-banner" id="verse-banner">
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 6.5C10.5 5 8 4.5 4.5 4.5V17.5C8 17.5 10.5 18 12 19.5C13.5 18 16 17.5 19.5 17.5V4.5C16 4.5 13.5 5 12 6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 6.5V19.5" stroke="currentColor" stroke-width="1.5"/></svg>
+  <span id="verse-banner-text"></span>
+</div>
+
+<!-- FULLSCREEN: Exit confirmation -->
+<div class="fullpage" id="exit-page">
+  <div class="appbar">
+    <button class="appbar-icon" id="exit-back-btn" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="appbar-title-wrap"><span class="appbar-title">Exit Series?</span></div>
+    <div style="width:48px;flex-shrink:0;"></div>
+  </div>
+  <div class="fullpage-content" style="text-align:center; padding-top:60px;">
+    <p style="font-size:19px; color:var(--text-muted); line-height:1.6; margin-bottom:28px;">Your current progress in this series will be lost. You can start again anytime.</p>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="exit-confirm-btn" style="background:var(--red);">Exit Series</button>
+      <button class="btn btn-secondary" id="exit-cancel-btn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- FULLSCREEN: Left menu -->
+<div class="fullpage" id="left-menu-page">
+  <div class="appbar">
+    <button class="appbar-icon" id="left-menu-back-btn" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="appbar-title-wrap"><span class="appbar-title">Menu</span></div>
+    <div style="width:48px;flex-shrink:0;"></div>
+  </div>
+  <div class="fullpage-content" id="left-menu-content"></div>
+</div>
+
+<!-- FULLSCREEN: Right menu -->
+<div class="fullpage" id="right-menu-page">
+  <div class="appbar">
+    <button class="appbar-icon" id="right-menu-back-btn" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="appbar-title-wrap"><span class="appbar-title">Options</span></div>
+    <div style="width:48px;flex-shrink:0;"></div>
+  </div>
+  <div class="fullpage-content" id="right-menu-content"></div>
+</div>
+
+<!-- FULLSCREEN: Our Team -->
+<div class="fullpage" id="team-page">
+  <div class="appbar">
+    <button class="appbar-icon" id="team-back-btn" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="appbar-title-wrap"><span class="appbar-title">Our Team</span></div>
+    <div style="width:48px;flex-shrink:0;"></div>
+  </div>
+  <div class="fullpage-content" id="team-page-content"></div>
+</div>
+
+<!-- FULLSCREEN: Developer -->
+<div class="fullpage" id="developer-page">
+  <div class="appbar">
+    <button class="appbar-icon" id="developer-back-btn" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="appbar-title-wrap"><span class="appbar-title">Developer</span></div>
+    <div style="width:48px;flex-shrink:0;"></div>
+  </div>
+  <div class="fullpage-content" id="developer-page-content"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Removable series modules — each is fully self-contained and independent -->
+<script src="series1.js"></script>
+<script src="series2.js"></script>
+<script src="series3.js"></script>
+<!-- Removable referral module -->
+<script src="referral.js"></script>
+<!-- Core app engine -->
+<script src="app.js"></script>
+</body>
+</html>
