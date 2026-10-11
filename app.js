@@ -641,12 +641,33 @@
   /* ---------------------------------------------------------------- */
   function renderRightMenu() {
     var html = "";
-    html += buildMenuItem("textsize", "Text Size", "p-textsize",
-      '<div class="fontsize-row">' +
-        '<button class="appbar-icon" id="font-dec" aria-label="Decrease text size">A−</button>' +
-        '<span class="fontsize-pct" id="fontsize-pct">' + Math.round(currentFontScale() * 100) + '%</span>' +
-        '<button class="appbar-icon" id="font-inc" aria-label="Increase text size">A+</button>' +
-      '</div>');
+    var isDark = document.documentElement.getAttribute("data-mode") === "dark";
+    var currentAccent = document.documentElement.getAttribute("data-accent") || "connect";
+    var ACCENTS = [
+      { key: "connect", label: "Connect Blue", hex: "#1877F2" },
+      { key: "clay", label: "Warm Clay", hex: "#CC785C" },
+      { key: "tealgreen", label: "Teal Green", hex: "#0B8A5E" },
+      { key: "indigo", label: "Indigo", hex: "#5865F2" },
+      { key: "graphite", label: "Graphite", hex: "#3A3A3C" },
+      { key: "crimson", label: "Crimson", hex: "#E50914" },
+      { key: "sunburst", label: "Sunburst", hex: "#C79A00" },
+      { key: "skycyan", label: "Sky Cyan", hex: "#1DA1F2" },
+      { key: "violet", label: "Violet", hex: "#9146FF" },
+      { key: "coral", label: "Coral", hex: "#F0563D" }
+    ];
+    html += buildMenuItem("textsize", "Appearance", "p-appearance",
+      '<div class="appearance-row"><span>Dark Mode</span><button class="switch' + (isDark ? ' on' : '') + '" id="dark-mode-switch"><span class="knob"></span></button></div>' +
+      '<div class="appearance-row" style="padding-bottom:0;"><span>Accent Color</span></div>' +
+      '<div class="accent-row" id="accent-row">' +
+        ACCENTS.map(function (a) {
+          return '<button class="accent-item' + (a.key === currentAccent ? ' active' : '') + '" data-accent-key="' + a.key + '">' +
+            '<span class="accent-swatch" style="background:' + a.hex + ';"></span><span class="accent-item-label">' + a.label + '</span></button>';
+        }).join("") +
+      '</div>' +
+      '<div class="appearance-row" style="border-top:1px solid var(--border); margin-top:4px;"><span>Text Size</span>' +
+      '<div class="fontsize-row" style="margin:0;"><button class="appbar-icon" id="font-dec" aria-label="Decrease text size" style="background:var(--surface);">A−</button>' +
+      '<span class="fontsize-pct" id="fontsize-pct">' + Math.round(currentFontScale() * 100) + '%</span>' +
+      '<button class="appbar-icon" id="font-inc" aria-label="Increase text size" style="background:var(--surface);">A+</button></div></div>');
     html += buildMenuItem("share", "Share App", "p-share",
       '<p class="util-desc">Send this game to a friend or family member.</p><div style="padding:0 16px;"><button class="btn btn-primary btn-sm" id="share-btn">Share Bible Trivia Master</button></div>');
     html += buildMenuItem("install", "Install App", "p-install",
@@ -674,6 +695,23 @@
     els.rightMenuContent.innerHTML = html;
     wireMenuAccordion(els.rightMenuContent);
     initRipples(els.rightMenuContent);
+
+    var darkSwitch = document.getElementById("dark-mode-switch");
+    if (darkSwitch) darkSwitch.addEventListener("click", function () {
+      var nowDark = document.documentElement.getAttribute("data-mode") === "dark";
+      if (nowDark) { document.documentElement.removeAttribute("data-mode"); darkSwitch.classList.remove("on"); }
+      else { document.documentElement.setAttribute("data-mode", "dark"); darkSwitch.classList.add("on"); }
+    });
+    var accentRow = document.getElementById("accent-row");
+    if (accentRow) accentRow.querySelectorAll(".accent-item").forEach(function (item) {
+      item.addEventListener("click", function () {
+        var key = item.getAttribute("data-accent-key");
+        if (key === "connect") document.documentElement.removeAttribute("data-accent");
+        else document.documentElement.setAttribute("data-accent", key);
+        accentRow.querySelectorAll(".accent-item").forEach(function (b) { b.classList.remove("active"); });
+        item.classList.add("active");
+      });
+    });
 
     var fontDec = document.getElementById("font-dec");
     var fontInc = document.getElementById("font-inc");
