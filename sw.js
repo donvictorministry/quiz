@@ -1,7 +1,7 @@
 /* Bible Trivia Master — Service Worker
    Caches the app shell for offline-first use. No external/CDN assets are fetched or cached. */
 
-const CACHE_NAME = "bible-trivia-master-v1";
+const CACHE_NAME = "bible-trivia-master-v1.2";
 const APP_SHELL = [
   "./",
   "./index.html",
